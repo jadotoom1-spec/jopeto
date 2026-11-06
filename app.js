@@ -50,7 +50,7 @@ function render() {
     const v = sel.value;
     let html = sel.dataset.all ? '<option value="">كل المواد</option>' : sel.dataset.none ? '<option value="">بدون مادة</option>' : '';
     html += db.courses.map((c) => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
-    sel.innerHTML = html; sel.value = v;
+    sel.innerHTML = html; sel.value = v; if (sel.selectedIndex < 0) sel.selectedIndex = 0;
   });
 
   // الإحصائيات
