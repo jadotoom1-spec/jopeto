@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>دفتري الدراسي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>📚 دفتري الدراسي</h1>
+    <nav class="tabs">
+      <button class="tab active" data-tab="dashboard">الرئيسية</button>
+      <button class="tab" data-tab="courses">المواد</button>
+      <button class="tab" data-tab="grades">الدرجات</button>
+      <button class="tab" data-tab="tasks">المهام</button>
+      <button class="tab" data-tab="cleaner">تنظيف النص</button>
+      <button class="tab" data-tab="backup">نسخ احتياطي</button>
+    </nav>
+  </header>
+  <main>
+    <section id="dashboard" class="panel active">
+      <div class="stats">
+        <div class="stat"><span class="num" id="st-courses">0</span><span>مادة</span></div>
+        <div class="stat"><span class="num" id="st-avg">—</span><span>المعدل العام</span></div>
+        <div class="stat"><span class="num" id="st-grades">0</span><span>درجة مسجلة</span></div>
+        <div class="stat"><span class="num" id="st-tasks">0</span><span>مهمة متبقية</span></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><h2>معدل كل مادة</h2><div id="course-bars" class="bars"></div></div>
+        <div class="card"><h2>المهام القادمة</h2><ul id="upcoming" class="list"></ul></div>
+      </div>
+    </section>
+
+    <section id="courses" class="panel">
+      <form id="course-form" class="card form">
+        <h2>إضافة مادة</h2>
+        <input type="hidden" name="id">
+        <label>اسم المادة <input name="name" required></label>
+        <label>المدرّس <input name="teacher"></label>
+        <label>الساعات / الوحدات <input name="credits" type="number" min="0" step="0.5" value="3"></label>
+        <label>ملاحظات <input name="notes"></label>
+        <div class="actions"><button type="submit" class="btn">حفظ</button><button type="reset" class="btn ghost">إلغاء</button></div>
+      </form>
+      <div class="card"><table id="course-table"><thead><tr><th>المادة</th><th>المدرّس</th><th>الساعات</th><th>المعدل</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="grades" class="panel">
+      <form id="grade-form" class="card form">
+        <h2>إضافة درجة</h2>
+        <input type="hidden" name="id">
+        <label>المادة <select name="courseId" required class="course-select"></select></label>
+        <label>النوع / العنوان <input name="title" required placeholder="امتحان شهري، كويز..."></label>
+        <label>الدرجة <input name="score" type="number" step="0.01" min="0" required></label>
+        <label>من <input name="max" type="number" step="0.01" min="0.01" value="100" required></label>
+        <label>التاريخ <input name="date" type="date"></label>
+        <div class="actions"><button type="submit" class="btn">حفظ</button><button type="reset" class="btn ghost">إلغاء</button></div>
+      </form>
+      <div class="card">
+        <label class="filter">تصفية حسب المادة <select id="grade-filter" class="course-select" data-all="1"></select></label>
+        <table id="grade-table"><thead><tr><th>المادة</th><th>العنوان</th><th>الدرجة</th><th>النسبة</th><th>التاريخ</th><th></th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section id="tasks" class="panel">
+      <form id="task-form" class="card form">
+        <h2>إضافة مهمة / واجب</h2>
+        <input type="hidden" name="id">
+        <label>المادة <select name="courseId" class="course-select" data-none="1"></select></label>
+        <label>المهمة <input name="title" required></label>
+        <label>موعد التسليم <input name="due" type="date"></label>
+        <div class="actions"><button type="submit" class="btn">حفظ</button><button type="reset" class="btn ghost">إلغاء</button></div>
+      </form>
+      <div class="card"><ul id="task-list" class="list tasks"></ul></div>
+    </section>
+
+    <section id="cleaner" class="panel">
+      <div class="card">
+        <h2>تنظيف النص من الرموز المخفية</h2>
+        <p class="muted">يحذف الحروف غير المرئية (مسافات صفرية العرض، علامات اتجاه، BOM، شرطات ناعمة…) اللي بتيجي مع النصوص المنسوخة من المواقع أو أدوات الذكاء الاصطناعي، ويوحّد المسافات وعلامات التنصيص، ويشيل رموز Markdown لو حبيت.</p>
+        <div class="opts">
+          <label><input type="checkbox" id="o-invisible" checked> حذف الحروف المخفية</label>
+          <label><input type="checkbox" id="o-spaces" checked> توحيد المسافات</label>
+          <label><input type="checkbox" id="o-quotes" checked> توحيد علامات التنصيص والشرطات</label>
+          <label><input type="checkbox" id="o-markdown"> حذف رموز Markdown (** # - `)</label>
+          <label><input type="checkbox" id="o-emoji"> حذف الإيموجي</label>
+          <label><input type="checkbox" id="o-tatweel"> حذف التطويل (ـ)</label>
+        </div>
+        <div class="grid2">
+          <label>النص الأصلي<textarea id="c-in" rows="12" placeholder="الصق النص هنا..."></textarea></label>
+          <label>النص بعد التنظيف<textarea id="c-out" rows="12" readonly></textarea></label>
+        </div>
+        <div class="actions">
+          <button class="btn" id="c-run">نظّف</button>
+          <button class="btn ghost" id="c-copy">نسخ النتيجة</button>
+          <span id="c-report" class="muted"></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="backup" class="panel">
+      <div class="card">
+        <h2>النسخ الاحتياطي</h2>
+        <p class="muted">البيانات تُحفظ تلقائياً في المتصفح على جهازك. نزّل نسخة احتياطية حتى لا تضيع إذا مسحت بيانات المتصفح.</p>
+        <div class="actions">
+          <button class="btn" id="b-json">تنزيل نسخة (JSON)</button>
+          <button class="btn ghost" id="b-csv">تصدير الدرجات (CSV / Excel)</button>
+          <label class="btn ghost">استيراد نسخة<input type="file" id="b-import" accept=".json" hidden></label>
+          <button class="btn danger" id="b-clear">مسح كل البيانات</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
