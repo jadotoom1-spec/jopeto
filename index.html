@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vide Wise</title>
+<style>
+:root{--bg:#f7f5f2;--fg:#1d1b19;--muted:#6b665f;--card:#fff;--accent:#7c5cff}
+@media (prefers-color-scheme:dark){:root{--bg:#141312;--fg:#eeeae4;--muted:#9a948b;--card:#1f1d1b;--accent:#a08bff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:40px 16px}
+h1{margin:0 0 4px;font-size:2rem}p.sub{color:var(--muted);margin:0 0 24px}
+.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.moods button{font-size:2rem;padding:12px 0;border:2px solid transparent;border-radius:14px;background:var(--card);cursor:pointer}
+.moods button.on{border-color:var(--accent)}
+textarea{width:100%;margin:16px 0 8px;padding:12px;border-radius:12px;border:1px solid #8884;background:var(--card);color:var(--fg);font:inherit;min-height:80px}
+#save{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:inherit;font-weight:600;cursor:pointer}
+ul{list-style:none;padding:0;margin:32px 0 0}li{background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px}
+li .e{font-size:1.6rem}li small{color:var(--muted);display:block}
+</style>
+</head>
+<body>
+<main>
+<h1>Vide Wise</h1>
+<p class="sub">Check your vibe. Notice the pattern.</p>
+<div class="moods" id="moods"></div>
+<textarea id="note" placeholder="What's shaping your vibe right now?"></textarea>
+<button id="save">Log vibe</button>
+<ul id="log"></ul>
+</main>
+<script>
+const M=["😞","😕","😐","🙂","😄"];let pick=null;
+const get=()=>{try{return JSON.parse(localStorage.vw||"[]")}catch{return[]}};
+const put=v=>{try{localStorage.vw=JSON.stringify(v)}catch{}};
+const moods=document.getElementById("moods");
+M.forEach((e,i)=>{const b=document.createElement("button");b.textContent=e;b.onclick=()=>{pick=i;[...moods.children].forEach((c,j)=>c.classList.toggle("on",j===i))};moods.append(b)});
+function render(){document.getElementById("log").innerHTML=get().map(x=>`<li><span class="e">${M[x.m]}</span><div>${x.n.replace(/[<&]/g,c=>c=="<"?"&lt;":"&amp;")||"<i>no note</i>"}<small>${new Date(x.t).toLocaleString()}</small></div></li>`).join("")}
+document.getElementById("save").onclick=()=>{if(pick===null)return alert("Pick a vibe first");const n=document.getElementById("note");put([{m:pick,n:n.value.trim(),t:Date.now()},...get()]);n.value="";render()};
+render();
+</script>
+</body>
+</html>
